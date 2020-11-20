@@ -2,7 +2,6 @@ from easyAI import TwoPlayersGame, Human_Player, AI_Player, Negamax, SSS
 
 # Authors: Jakub Wirkus, Maciej Sochalski
 # Game: Connect 4
-# Rules: https://en.wikipedia.org/wiki/Connect_Four
 
 
 class Connect4(TwoPlayersGame):
@@ -104,9 +103,10 @@ class Connect4(TwoPlayersGame):
 
     def show(self):
         print('board:')
+        print('0  1  2  3  4  5  6 - indexes\n')
         for row in range(self.rows):
             for column in range(self.columns):
-                print(self.board[row][column], end=" ")
+                print(self.board[row][column], end="  ")
             print()
 
     def scoring(self):
@@ -117,7 +117,9 @@ if __name__ == '__main__':
     # Start a match (and store the history of moves when it ends)
     ai = Negamax(5)
     ai_algo_sss = SSS(5)
+    # Human Player with AI Player
     game = Connect4([Human_Player(), AI_Player(ai)])
+    # AI Player with AI Player
     # game = Connect4([AI_Player(ai_algo_sss), AI_Player(ai)])
     history = game.play()
 
