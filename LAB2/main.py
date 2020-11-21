@@ -1,7 +1,9 @@
 from easyAI import TwoPlayersGame, Human_Player, AI_Player, Negamax, SSS
 
+# Rules: https://en.wikipedia.org/wiki/Connect_Four
 # Authors: Jakub Wirkus, Maciej Sochalski
 # Game: Connect 4
+# Preparation instruction: install pip (command: py -m pip install) and easyAI (command: py -m pip install easyAI)
 
 
 class Connect4(TwoPlayersGame):
@@ -16,9 +18,17 @@ class Connect4(TwoPlayersGame):
         self.nplayer = 1  # player 1 starts
 
     def possible_moves(self):
+        """
+        List of possible moves
+        :returns: list of columns where disc can be placed
+        """
         return [col for col in range(self.columns) if (self.board[0][col]) == 0]
 
     def make_move(self, column):
+        """
+        Places disc at the lowest possible coordinate in a column
+        :param column: column where disc can be placed
+        """
         row = self.rows - 1
         while row >= 0:
             if self.board[row][int(column)] == 0:
@@ -27,12 +37,26 @@ class Connect4(TwoPlayersGame):
             row -= 1
 
     def win(self):
+        """
+        Win conditions
+        :returns: true if player scores four discs in a row vertically, horizontally or diagonally
+        """
         return self.find_4(self.nplayer)
 
     def find_4(self, player):
+        """
+        Finds 4 discs in a row vertically.
+        :param player: value 1 for human player, value 2 for computer player
+        :returns: true if player has 4 discs in a row vertically, horizontally or diagonally
+        """
         return self.find_4_vertically(player) or self.find_4_horizontally(player) or self.find_4_diagonally(player)
 
     def find_4_vertically(self, player):
+        """
+        Finds 4 discs in a row vertically.
+        :param player: value 1 for human player, value 2 for computer player
+        :returns: true if player has 4 discs in a row vertically
+        """
         for column in range(self.columns):
             count = 0
             for row in range(self.rows):
@@ -45,6 +69,11 @@ class Connect4(TwoPlayersGame):
         return False
 
     def find_4_horizontally(self, player):
+        """
+        Finds 4 discs in a row horizontally.
+        :param player: value 1 for human player, value 2 for computer player
+        :returns: true if player has 4 discs in a row horizontally
+        """
         for row in range(self.rows):
             count = 0
             for column in range(self.columns):
@@ -57,10 +86,19 @@ class Connect4(TwoPlayersGame):
         return False
 
     def find_4_diagonally(self, player):
+        """
+        Finds 4 discs in a row diagonally.
+        :param player: value 1 for human player, value 2 for computer player
+        :returns: true if player has 4 discs in a row diagonally
+        """
         return self.find_4_diagonally_plus(player) or self.find_4_diagonally_minus(player)
 
-    # search for four discs in a row in positive direction (from column 0 to 6)
     def find_4_diagonally_plus(self, player):
+        """
+        Finds 4 discs in a row diagonally starting from column 0. Uses predefined coordinates to start search
+        :param player: value 1 for human player, value 2 for computer player
+        :returns: true if player has 4 discs in a row diagonally
+        """
         start_pos = [[3, 0], [4, 0], [5, 0], [5, 1], [5, 2], [5, 3]]
         for i in start_pos:
             row = i[0]
@@ -77,8 +115,12 @@ class Connect4(TwoPlayersGame):
                 column += 1
         return False
 
-    # search for four discs in a row in negative direction (from column 6 to 0)
     def find_4_diagonally_minus(self, player):
+        """
+        Finds 4 discs in a row diagonally starting from column 6. Uses predefined coordinates to start search
+        :param player: value 1 for human player, value 2 for computer player
+        :returns: true if player has 4 discs in a row diagonally
+        """
         start_pos = [[3, 6], [4, 6], [5, 6], [5, 5], [5, 4], [5, 3]]
         for i in start_pos:
             row = i[0]
@@ -96,9 +138,16 @@ class Connect4(TwoPlayersGame):
         return False
 
     def draw(self):
+        """
+        Draw conditions
+        :returns: true if list of possible moves is empty
+        """
         return self.possible_moves() == []
 
     def is_over(self):
+        """
+        Game is over when somebody wins or draws
+        """
         return self.win() or self.draw()  # Game stops when someone wins or draws.
 
     def show(self):
