@@ -44,7 +44,6 @@ if __name__ == '__main__':
         (r.service['highest'] & r.clean['highest'] & r.food['highest']) |
         (r.service['highest'] & r.clean['highest'] & r.food['high'])),
         consequent=r.rating['highest'])
-
     r.initialize_rating_sim([rule1, rule2, rule3, rule4, rule5])
 
     r.enter_quality('food')
@@ -53,4 +52,4 @@ if __name__ == '__main__':
 
     r.compute()
     r.print_result()
-    r.rating.view(sim=r.rating_sim)
+
