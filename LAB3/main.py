@@ -68,8 +68,9 @@ rating_sim.compute()
 ratingValue = 0
 if rating_sim.output['rating'] > 9.66:
     ratingValue = math.ceil(rating_sim.output['rating'])
-else:
+elif rating_sim.output['rating'] < 1.70:
     ratingValue = math.floor(rating_sim.output['rating'])
-print("Rating: ", ratingValue)
-print("Rating: ", rating_sim.output['rating'])
+else:
+    ratingValue = round(rating_sim.output['rating'])
+print("Calculated rating: ", rating_sim.output['rating'], "\nFinal rating: ", ratingValue)
 rating.view(sim=rating_sim)
