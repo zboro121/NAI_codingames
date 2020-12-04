@@ -1,76 +1,56 @@
-import numpy as np
-import skfuzzy as fuzz
+# Authors: Jakub Wirkus, Paweł Zborowski
+# Description: Calculating hotel rating based on
+# 3 ratings (r.food quality, r.service quality, r.cleanness) using fuzzy logic
+
+from LAB3.HotelRatingFuzzy import Rating
 from skfuzzy import control as ctrl
-import math
 
-food = ctrl.Antecedent(np.arange(0, 11, 1), 'food')
-service = ctrl.Antecedent(np.arange(0, 11, 1), 'service')
-clean = ctrl.Antecedent(np.arange(0, 11, 1), 'clean')
-rating = ctrl.Consequent(np.arange(0, 11, 1), 'rating')
+if __name__ == '__main__':
 
-names = ['lowest', 'low', 'medium', 'high', 'highest']
+    r = Rating()
+    r.get_grade_of_rating_triangle('lowest', [0, 0, 1])
+    r.get_grade_of_rating_triangle('low', [0, 2, 4])
+    r.get_grade_of_rating_quadrangle('medium', [3, 4, 6, 7])
+    r.get_grade_of_rating_triangle('high', [6, 8, 10])
+    r.get_grade_of_rating_triangle('highest', [9, 10, 10])
 
-food.automf(names=names)
-service.automf(names=names)
-clean.automf(names=names)
-rating.automf(names=names)
+    # Rules
+    rule1 = ctrl.Rule(antecedent=(
+        (r.service['lowest'] & r.clean['lowest'] & r.food['lowest']) |
+        (r.service['lowest'] & r.clean['lowest'] & r.food['low'])),
+        consequent=r.rating['lowest'])
+    rule2 = ctrl.Rule(antecedent=(
+        (r.service['low'] & r.clean['low'] & r.food['low']) |
+        (r.service['low'] & r.clean['lowest'] & r.food['low']) |
+        (r.service['lowest'] & r.clean['low'] & r.food['low']) |
+        (r.service['low'] & r.clean['lowest'] & r.food['medium']) |
+        (r.service['lowest'] & r.clean['low'] & r.food['medium'])),
+        consequent=r.rating['low'])
+    rule3 = ctrl.Rule(antecedent=(
+        (r.service['medium'] & r.clean['medium'] & r.food['medium']) |
+        (r.service['medium'] & r.clean['low'] & r.food['medium']) |
+        (r.service['low'] & r.clean['medium'] & r.food['medium']) |
+        (r.service['medium'] & r.clean['low'] & r.food['high']) |
+        (r.service['low'] & r.clean['medium'] & r.food['high'])),
+        consequent=r.rating['medium'])
+    rule4 = ctrl.Rule(antecedent=(
+        (r.service['high'] & r.clean['high'] & r.food['high']) |
+        (r.service['high'] & r.clean['medium'] & r.food['high']) |
+        (r.service['medium'] & r.clean['high'] & r.food['high']) |
+        (r.service['high'] & r.clean['medium'] & r.food['highest']) |
+        (r.service['medium'] & r.clean['high'] & r.food['highest'])),
+        consequent=r.rating['high'])
+    rule5 = ctrl.Rule(antecedent=(
+        (r.service['highest'] & r.clean['highest'] & r.food['highest']) |
+        (r.service['highest'] & r.clean['highest'] & r.food['high'])),
+        consequent=r.rating['highest'])
 
-rating['lowest'] = fuzz.trimf(rating.universe, [0, 0, 1])
-rating['low'] = fuzz.trimf(rating.universe, [0, 2, 4])
-rating['medium'] = fuzz.trapmf(rating.universe, [3, 4, 6, 7])
-rating['high'] = fuzz.trimf(rating.universe, [6, 8, 10])
-rating['highest'] = fuzz.trimf(rating.universe, [9, 10, 10])
+    r.initialize_rating_sim([rule1, rule2, rule3, rule4, rule5])
 
+    r.enter_quality('food')
+    r.enter_quality('service')
+    r.enter_quality('clean')
 
-# Rules
-rule1 = ctrl.Rule(antecedent=(
-    (service['lowest'] & clean['lowest'] & food['lowest']) |
-    (service['lowest'] & clean['lowest'] & food['low'])),
-    consequent=rating['lowest'])
-rule2 = ctrl.Rule(antecedent=(
-    (service['low'] & clean['low'] & food['low']) |
-    (service['low'] & clean['lowest'] & food['low']) |
-    (service['lowest'] & clean['low'] & food['low']) |
-    (service['low'] & clean['lowest'] & food['medium']) |
-    (service['lowest'] & clean['low'] & food['medium'])),
-    consequent=rating['low'])
-rule3 = ctrl.Rule(antecedent=(
-    (service['medium'] & clean['medium'] & food['medium']) |
-    (service['medium'] & clean['low'] & food['medium']) |
-    (service['low'] & clean['medium'] & food['medium']) |
-    (service['medium'] & clean['low'] & food['high']) |
-    (service['low'] & clean['medium'] & food['high'])),
-    consequent=rating['medium'])
-rule4 = ctrl.Rule(antecedent=(
-    (service['high'] & clean['high'] & food['high']) |
-    (service['high'] & clean['medium'] & food['high']) |
-    (service['medium'] & clean['high'] & food['high']) |
-    (service['high'] & clean['medium'] & food['highest']) |
-    (service['medium'] & clean['high'] & food['highest'])),
-    consequent=rating['high'])
-rule5 = ctrl.Rule(antecedent=(
-    (service['highest'] & clean['highest'] & food['highest']) |
-    (service['highest'] & clean['highest'] & food['high'])),
-    consequent=rating['highest'])
-
-rating_ctr = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5])
-rating_sim = ctrl.ControlSystemSimulation(rating_ctr)
-
-food_quality = int(input("Enter food quality <0,10>: "))
-service_quality = int(input("Enter service quality <0,10>: "))
-clean_quality = int(input("Enter cleanness quality <0,10>: "))
-
-rating_sim.input['food'] = food_quality
-rating_sim.input['service'] = service_quality
-rating_sim.input['clean'] = clean_quality
-
-rating_sim.compute()
-ratingValue = 0
-if rating_sim.output['rating'] > 9.66:
-    ratingValue = math.ceil(rating_sim.output['rating'])
-elif rating_sim.output['rating'] < 1.70:
-    ratingValue = math.floor(rating_sim.output['rating'])
-else:
-    ratingValue = round(rating_sim.output['rating'])
-print("Calculated rating: ", rating_sim.output['rating'], "\nFinal rating: ", ratingValue)
-rating.view(sim=rating_sim)
+    r.compute()
+    r.print_result()
+    r.rating.view(sim=r.rating_sim)

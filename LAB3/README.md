@@ -1,4 +1,4 @@
-## Exercise 2 - Connect 4 game
+## Exercise 3 - Hotel rating - fuzzy logic
 * [Code](https://github.com/kwkna/NAI_codingames/blob/master/LAB3/main.py)
 * [Screens from the game](https://github.com/kwkna/NAI_codingames/blob/master/LAB3/screens)
 * Preparation Instruction without requirements.txt:
