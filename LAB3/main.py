@@ -8,11 +8,11 @@ from skfuzzy import control as ctrl
 if __name__ == '__main__':
 
     r = Rating()
-    r.get_grade_of_rating_triangle('lowest', [0, 0, 1])
-    r.get_grade_of_rating_triangle('low', [0, 2, 4])
-    r.get_grade_of_rating_quadrangle('medium', [3, 4, 6, 7])
-    r.get_grade_of_rating_triangle('high', [6, 8, 10])
-    r.get_grade_of_rating_triangle('highest', [9, 10, 10])
+    r.get_membership_fun_triangle('lowest', [0, 0, 1])
+    r.get_membership_fun_triangle('low', [0, 2, 4])
+    r.get_membership_fun_quadrangle('medium', [3, 4, 6, 7])
+    r.get_membership_fun_triangle('high', [6, 8, 10])
+    r.get_membership_fun_triangle('highest', [9, 10, 10])
 
     # Rules
     rule1 = ctrl.Rule(antecedent=(
@@ -46,9 +46,9 @@ if __name__ == '__main__':
         consequent=r.rating['highest'])
     r.initialize_rating_sim([rule1, rule2, rule3, rule4, rule5])
 
-    r.enter_quality('food')
-    r.enter_quality('service')
-    r.enter_quality('clean')
+    r.pass_input('food')
+    r.pass_input('service')
+    r.pass_input('clean')
 
     r.compute()
     r.print_result()

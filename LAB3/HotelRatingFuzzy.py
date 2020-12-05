@@ -48,7 +48,7 @@ class Rating:
         self.clean.automf(names=self.names)
         self.rating.automf(names=self.names)
 
-    def get_grade_of_rating_triangle(self, grade, triangle_list):
+    def get_membership_fun_triangle(self, grade, triangle_list):
         """
         Draws triangle.
         :param grade: Assigned fuzzy value
@@ -58,7 +58,7 @@ class Rating:
         self.rating[grade] = fuzz.trimf(self.rating.universe, triangle_list)
         return self.rating
 
-    def get_grade_of_rating_quadrangle(self, grade, quadrangle_list):
+    def get_membership_fun_quadrangle(self, grade, quadrangle_list):
         """
         Draws triangle.
         :param grade: Assigned fuzzy value
@@ -91,7 +91,7 @@ class Rating:
         self.rating_sim = self.get_rating_sim(list_of_rules)
         return self.rating_sim
 
-    def enter_quality(self, value):
+    def pass_input(self, value):
         """
         Passes inputs to the ControlSystem
         :returns: Control System Simulation object
